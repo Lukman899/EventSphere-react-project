@@ -3,19 +3,19 @@ import { Route, Routes } from 'react-router'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import NotFound from './pages/NotFound'
-import Home from './pages/Home'
-import { House } from 'lucide-react'
+import HomePage from './pages/HomePage'
 
 function App() {
   return (
-    <div>
-      <House/>
-      <Navbar/>
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='*' element={<NotFound/>}/>
-      </Routes>
-      <Footer/>
+    <div className='min-h-screen flex flex-col bg-[#FAF9F5] text-stone-900 selection:text-red-600'>
+      <Navbar />
+      <div className='flex-1'>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
   )
 }
