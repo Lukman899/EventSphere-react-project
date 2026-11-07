@@ -1,8 +1,11 @@
+
+import Skeleton from "@/components/common/Skeleton";
 import EventCard from "@/components/events/EventCard";
-import FeaturedCarousel from "@/components/events/FeaturedCaurousel";
+import FeaturedCarousel from "@/components/events/FeaturedCarousel";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import {
+  ArrowRight,
   Briefcase,
   ChevronRight,
   Compass,
@@ -74,7 +77,6 @@ function getCategoryColor(i) {
   return colors[i % colors.length];
 }
 
-
 const HUB_CITIES = [
   {
     name: "Bengaluru",
@@ -112,28 +114,28 @@ export default function Home() {
         let {
           data: { data },
         } = await axios.get(
-          "https://eventsphere-server-mfdb.onrender.com/api/events/featured"
+          "https://eventsphere-server-mfdb.onrender.com/api/events/featured",
         );
-        setFeaturedEvents(Array.isArray(data) ? data : []);
-      } catch (error) { }
+        setFeaturedEvents(data);
+      } catch (error) {}
 
       try {
         let {
           data: { data },
         } = await axios.get(
-          "https://eventsphere-server-mfdb.onrender.com/api/categories"
+          "https://eventsphere-server-mfdb.onrender.com/api/categories",
         );
-        setCategories(Array.isArray(data) ? data : []);
-      } catch (error) { }
+        setCategories(data);
+      } catch (error) {}
 
       try {
         let {
           data: { data },
         } = await axios.get(
-          "https://eventsphere-server-mfdb.onrender.com/api/events?limit=8&sort=startDate&order=asc"
+          "https://eventsphere-server-mfdb.onrender.com/api/events?limit=8&sort=startDate&order=asc",
         );
         setTrendingEvents(data);
-      } catch (error) { }
+      } catch (error) {}
 
       setIsLoading(false);
     }
@@ -147,14 +149,12 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8 pb-10 border-b border-[#EBE8DF]">
           <div className="max-w-2xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-orange-100/70 text-[#C2410C] border border-orange-200">
-              <Sparkles className="w-3.5 h-3.5" />
-              India's Curated Community Conclaves
+              <Sparkles className="w-3.5 h-3.5" /> India's Curated Community
+              Conclaves
             </div>
-
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#111] leading-[1.08]">
               Extraordinary gatherings for curious minds.
             </h1>
-
             <p className="text-base sm:text-lg text-stone-600 leading-relaxed font-normal">
               Discover verified developer summits, acoustic indie evenings,
               founder pitch conclaves, and art retreats across Bengaluru,
@@ -173,7 +173,6 @@ export default function Home() {
                 <span>Explore 40+ Gatherings</span>
               </Button>
             </Link>
-
             <Link to="/create-event">
               <Button
                 variant="secondary"
@@ -195,13 +194,11 @@ export default function Home() {
               Curated Spotlight
             </h2>
           </div>
-
           <Link
             to="/explore"
             className="text-xs font-semibold text-[#E65100] hover:underline flex items-center gap-1"
           >
-            Browse all
-            <ChevronRight className="w-3.5 h-3.5" />
+            Browse all <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -218,7 +215,8 @@ export default function Home() {
             Browse by Discipline
           </h2>
           <p className="text-xs text-stone-500">
-            Curated tracks dynamically fetched from our active community listings
+            Curated tracks dynamically fetched from our active community
+            listings
           </p>
         </div>
 
@@ -242,7 +240,7 @@ export default function Home() {
             {categories.map((c, i) => {
               const { _id, name, eventCount } = c;
               const Icon = getCategoryIconComponent(c);
-              const color = getCategoryColor(i)
+              const color = getCategoryColor(i);
 
               return (
                 <Link
@@ -250,16 +248,19 @@ export default function Home() {
                   to="/explore"
                   className="p-4 rounded-2xl bg-white border border-[#EBE8DF] hover:border-[#D5D0C2] hover:shadow-subtle transition-all duration-200 group flex flex-col justify-between"
                 >
-                  <div className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-3 transition-all duration-200 ${color?.icon}`}>
-                    <Icon className="w-5 h-5" />
+                  <div
+                    className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-3 transition-all duration-200 ${color?.icon}`}
+                  >
+                    <Icon />
                   </div>
-
                   <div>
-                    <p className={`text-xs font-bold text-stone-900 leading-snug group-hover:text-[#E65100] transition-colors ${color?.text}`}>
+                    <p
+                      className={`text-xs font-bold text-stone-900 leading-snug group-hover:text-[#E65100] transition-colors ${color?.text}`}
+                    >
                       {name}
                     </p>
                     <p className="text-[11px] text-stone-400 mt-0.5">
-                      {eventCount} Event
+                      {eventCount} Events
                     </p>
                   </div>
                 </Link>
@@ -284,34 +285,39 @@ export default function Home() {
             className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-xs rounded-lg font-medium border border-[#CCC8BA] bg-transparent hover:bg-[#F2F1EC] text-[#222]"
           >
             <span>View All Events</span>
-            <span>→</span>
+            <ArrowRight />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {
-            trendingEvents.map(e => {
-              return (
-                <EventCard key={e._id} event={e} />
-              )
-            })
-          }
-
-
-
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Skeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trendingEvents.map((e) => {
+              return <EventCard key={e._id} event={e} />;
+            })}
+          </div>
+        )}
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
         <div>
-          <h2 className="text-xl font-bold text-stone-900 tracking-tight">Explore by Community Hub</h2>
-          <p className="text-xs text-stone-500">Vibrant hubs where local conclaves thrive</p>
+          <h2 className="text-xl font-bold text-stone-900 tracking-tight">
+            Explore by Community Hub
+          </h2>
+          <p className="text-xs text-stone-500">
+            Vibrant hubs where local conclaves thrive
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {HUB_CITIES.map((c) => (
+          {HUB_CITIES.map((c, i) => (
             <Link
-              key={c.name}
+              key={i}
               to="/explore"
               className="group relative rounded-2xl overflow-hidden aspect-4/3 bg-stone-900 shadow-subtle border border-[#EBE8DF]"
             >
@@ -345,7 +351,9 @@ export default function Home() {
               Host your next summit, workshop or indie showcase on EventSphere.
             </h2>
             <p className="text-sm text-stone-300 leading-relaxed">
-              Every registered user can organize events. Enjoy seamless ticketing, automatic calendar syncing, verified attendee reviews, and real-time dashboard analytics.
+              Every registered user can organize events. Enjoy seamless
+              ticketing, automatic calendar syncing, verified attendee reviews,
+              and real-time dashboard analytics.
             </p>
           </div>
 
@@ -365,8 +373,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
