@@ -7,7 +7,7 @@ function NotFound() {
   return (
      <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
       <div className="max-w-md w-full bg-white rounded-3xl border border-[#EBE8DF] p-8 text-center space-y-5 shadow-subtle">
-        <div className="text-6xl font-black text-stone-300 font-mono">404</div>
+        <div className="text-6xl font-black text-stone-600 font-mono">404</div>
         <div className="space-y-1.5">
           <h2 className="text-xl font-bold text-stone-900">Experience Not Found</h2>
           <p className="text-xs text-stone-500">
