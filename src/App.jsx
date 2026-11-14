@@ -16,7 +16,7 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F5] text-stone-900 selection:bg-orange-100 selection:text-[#E65100]">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F5] text-stone-900 selection: selection:text-[#f30b0b]">
       <ScrollToTop />
       <Navbar />
       <div className="flex-1">
