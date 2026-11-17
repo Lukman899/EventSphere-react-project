@@ -1,11 +1,11 @@
 import EventReviewSection from "@/components/events/EventReviewSection";
-import api from "@/lib/axios";
 import {
   formatEventDate,
   formatEventTimeRange,
   formatPrice,
   getDaysRemaining,
 } from "@/lib/utils";
+import axios from "axios";
 import {
   Bookmark,
   Calendar,
@@ -25,7 +25,7 @@ import { toast } from "sonner";
 const Modes = {
   "in-person": "In-Person Gathering",
   online: "Online Conclave",
-  hybird: "Hybird Format",
+  hybrid: "Hybrid Format",
 };
 
 export default function EventDetailsPage() {
@@ -42,27 +42,28 @@ export default function EventDetailsPage() {
     async function fetchEvent() {
       setIsLoading(true);
       try {
-        let data = await api.get(
-          `/api/events/${slug}`,
+        let {
+          data: { data },
+        } = await axios.get(
+          `https://eventsphere-server-mfdb.onrender.com/api/events/${slug}`,
         );
         setEvent(data);
 
-        // https://eventsphere-server-mfdb.onrender.com/api/events/:eventId/reviews
-
-        let reviews = await api.get(
-          `/api/events/${data.id || data._id}/reviews`,
+        let {
+          data: { data: reviews },
+        } = await axios.get(
+          `https://eventsphere-server-mfdb.onrender.com/api/events/${data.id || data._id}/reviews`,
         );
-        setReviews(reviews)
-      } catch (error) { }
+        setReviews(reviews);
+      } catch (error) {}
 
       setIsLoading(false);
     }
     fetchEvent();
   }, []);
-
   function handleShare() {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("Event link copied to clipboard!")
+    toast.success("Event link copied to clipboard!");
   }
 
   if (isLoading) {
@@ -135,7 +136,7 @@ export default function EventDetailsPage() {
                 ? "Online Conclave"
                 : event.format === "in-person"
                   ? "In-Person Gathering"
-                  : "Hybird Format"} */}
+                  : "Hybrid Format"} */}
               {Modes[event.format]}
             </span>
             {event.featured && (
@@ -267,11 +268,15 @@ export default function EventDetailsPage() {
           </section>
 
           {/* Reviews section */}
-          <EventReviewSection reviews={reviews} averageRating={event.averageRating} numReviews={event.numReviews} />
+          <EventReviewSection
+            reviews={reviews}
+            averageRating={event.averageRating}
+            numReviews={event.numReviews}
+          />
         </div>
 
         {/* Right Column: Sticky Booking Ticket Card */}
-        <div className="sticky top-2a space-y-4">
+        <div className="sticky top-24 space-y-4">
           <div className="bg-white rounded-3xl border border-[#EBE8DF] p-6 sm:p-7 shadow-elevated space-y-6">
             <div className="flex items-baseline justify-between pb-4 border-b border-[#F2EFE8]">
               <div>
@@ -331,7 +336,7 @@ export default function EventDetailsPage() {
                 <span>
                   <Calendar className="w-4 h-4" />
                 </span>{" "}
-                Add to My SchedulenumReviews
+                Add to My Schedule
               </button>
             </div>
 

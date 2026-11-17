@@ -1,9 +1,10 @@
-
 import Skeleton from "@/components/common/Skeleton";
 import EventCard from "@/components/events/EventCard";
 import FeaturedCarousel from "@/components/events/FeaturedCarousel";
 import { Button } from "@/components/ui/button";
+import api from "@/lib/axios";
 import {
+  ArrowBigRight,
   ArrowRight,
   Briefcase,
   ChevronRight,
@@ -27,18 +28,22 @@ function getCategoryIconComponent(category) {
   if (icon === "palette") {
     return Palette;
   }
+
   if (icon === "briefcase") {
     return Briefcase;
   }
+
   if (icon === "graduation-cap") {
     return GraduationCap;
   }
+
   if (icon === "music") {
     return Music;
   }
   if (icon === "cpu") {
     return Cpu;
   }
+
   if (icon === "trophy") {
     return Trophy;
   }
@@ -108,18 +113,13 @@ export default function Home() {
   useEffect(() => {
     async function loadHomePage() {
       setIsLoading(true);
-
       try {
-        let data = await api.get(
-          "/api/events/featured",
-        );
+        let data = await api.get("/api/events/featured");
         setFeaturedEvents(data);
       } catch (error) {}
 
       try {
-        let data = await api.get(
-          "/api/categories",
-        );
+        let data = await api.get("/api/categories");
         setCategories(data);
       } catch (error) {}
 
@@ -132,7 +132,6 @@ export default function Home() {
 
       setIsLoading(false);
     }
-
     loadHomePage();
   }, []);
 
@@ -232,6 +231,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
             {categories.map((c, i) => {
               const { _id, name, eventCount } = c;
+
               const Icon = getCategoryIconComponent(c);
               const color = getCategoryColor(i);
 
@@ -285,7 +285,7 @@ export default function Home() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <Skeleton key={i} />
+              <Skeleton />
             ))}
           </div>
         ) : (
