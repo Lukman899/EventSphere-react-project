@@ -12,9 +12,11 @@ import {
 import { Link } from "react-router";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const favorites = useSelector((state) => state.favorites.items);
 
   return (
     <div className="sticky top-0 z-40 w-full bg-[#FAF9F5]/90 backdrop-blur-md border-b border-[#EBE8DF]">
@@ -57,6 +59,11 @@ function Navbar() {
             >
               <Bookmark className="w-4 h-4" />
               <span>Saved</span>
+              {favorites.length > 0 && (
+                <span className="w-5 h-5 rounded-full bg-orange-100 text-[#E65100] text-[11px] font-bold flex items-center justify-center">
+                  {favorites.length}
+                </span>
+              )}
             </Link>
 
             <Link
@@ -101,18 +108,13 @@ function Navbar() {
         </div>
 
         <div className="flex items-center md:hidden gap-2">
-          <Link
-            to="/explore"
-            className="p-2 rounded-xl text-stone-700 hover:bg-black/5"
-          >
-            <Search className="w-5 h-5" />
+          <Link to="/explore">
+            <button className="p-2 rounded-xl text-stone-700 hover:bg-black/5">
+              <Search className="w-5 h-5" />
+            </button>
           </Link>
-
           <button
-            type="button"
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isMobileMenuOpen}
             className="p-2 rounded-xl text-stone-700 hover:bg-black/5"
           >
             {isMobileMenuOpen ? (
@@ -138,55 +140,45 @@ function Navbar() {
           <div className="flex flex-col gap-1">
             <Link
               to="/explore"
-              onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-stone-800 hover:bg-black/5"
             >
               <div className="flex items-center gap-3">
-                <Compass className="w-4 h-4 text-stone-500" />
-                Explore Events
+                <Compass className="w-4 h-4 text-stone-500" /> Explore Events
               </div>
             </Link>
 
             <Link
               to="/schedule"
-              onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-stone-800 hover:bg-black/5"
             >
               <div className="flex items-center gap-3">
-                <Calendar className="w-4 h-4 text-stone-500" />
-                My Schedule
+                <Calendar className="w-4 h-4 text-stone-500" /> My Schedule
               </div>
             </Link>
 
             <Link
               to="/favorites"
-              onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-stone-800 hover:bg-black/5"
             >
               <div className="flex items-center gap-3">
-                <Bookmark className="w-4 h-4 text-stone-500" />
-                Saved Events
+                <Bookmark className="w-4 h-4 text-stone-500" /> Saved Events
               </div>
             </Link>
 
             <Link
               to="/profile"
-              onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-stone-800 hover:bg-black/5"
             >
               <div className="flex items-center gap-3">
-                <User className="w-4 h-4 text-stone-500" />
-                Member Profile
+                <User className="w-4 h-4 text-stone-500" /> Member Profile
               </div>
             </Link>
 
             <Link
               to="/create-event"
-              onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#E65100] hover:bg-orange-50"
             >
-              <PlusCircle className="w-4 h-4" />
-              Host an Event
+              <PlusCircle className="w-4 h-4" /> Host an Event
             </Link>
           </div>
 
