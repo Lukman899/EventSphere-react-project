@@ -4,9 +4,10 @@ import Navbar from "./components/common/Navbar";
 import NotFound from "./pages/NotFound";
 import HomePage from "./pages/HomePage";
 import { useEffect } from "react";
-import { Toaster } from "sonner";
 import EventDetailsPage from "./pages/EventDetailsPage";
+import { Toaster } from "sonner";
 import FavoritesPage from "./pages/FavoritesPage";
+import ExplorePage from "./pages/ExplorePage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -17,16 +18,15 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F5] text-stone-900 selection: selection:text-[#f30b0b]">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F5] text-stone-900 selection:bg-orange-100 selection:text-[#E65100]">
       <ScrollToTop />
       <Navbar />
       <div className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/events/:slug" element={<EventDetailsPage />} 
-          />
-          <Route path="/favorites" element={<FavoritesPage/>} 
-          />
+          <Route path="/events/:slug" element={<EventDetailsPage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
@@ -46,4 +46,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;  
