@@ -1,38 +1,45 @@
-import { setIsPaid, setFormat } from "@/store/slices/filterSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router";
+import { useEventFilters } from "@/hooks/useEventFilters";
+import api from "@/lib/axios";
+import { memo, useEffect, useMemo, useState } from "react";
 
-export default function EventFilterBar() {
-  const dispatch = useDispatch();
-  const filters = useSelector((state) => state.filters);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  function updateParams(updates) {
-    const params = new URLSearchParams(searchParams);
-    Object.entries(updates).forEach(([key, val]) => {
-      if (val !== undefined && val !== "" && val !== null) {
-        params.set(key, String(val));
-      } else {
-        params.delete(key);
-      }
-    })
-    setSearchParams(params);
-  }
+export const EventFilterBar = memo(() => {
+  const { updateParams, filters } = useEventFilters();
+  const [categories, setCategories] = useState([]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
   function handleFormatChange(format) {
-    dispatch(setFormat(format));
-    updateParams({ format })
+    updateParams({ format });
   }
-
-  const activeFormat = searchParams.get("format") || filters.format;
-
 
   function handleIsPaid(entry) {
-    dispatch(setIsPaid(entry))
-    updateParams({ isPaid: entry })
-
+    updateParams({ isPaid: entry });
   }
+
+  async function fetchCategories() {
+    setIsCategoriesLoading(true);
+    try {
+      let { data } = await api.get("/api/categories");
+      setCategories(data);
+    } catch (error) {}
+    setIsCategoriesLoading(false);
+  }
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const activeFormat = filters.format;
+  const activeCategory = filters.category;
+
+  const totalCategoryEvent = useMemo(() => {
+    console.log("calculation....");
+    return categories.reduce((acc, currVal) => {
+      acc += currVal.eventCount;
+      return acc;
+    }, 0);
+  }, [categories]);
+
+  console.log(totalCategoryEvent);
 
   return (
     <div className="space-y-4">
@@ -116,7 +123,6 @@ export default function EventFilterBar() {
         >
           <span>🔄</span>
           <span>Reset</span>
-
         </button>
       </div>
 
@@ -147,73 +153,57 @@ export default function EventFilterBar() {
         {/* All Disciplines Pill */}
         <button
           type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-[#1a1a1a] text-white shadow-sm"
+          onClick={() => updateParams({ category: "" })}
+          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
+            activeCategory === ""
+              ? "bg-stone-800 text-white border-stone-800"
+              : "bg-white border-[#DDD9CE] text-stone-600 hover:bg-stone-50"
+          }`}
         >
-          <span>All Disciplines</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-white">
-            42
-          </span>
+          <span>All Category</span>
+          {!isCategoriesLoading && (
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 ${
+                activeCategory === ""
+                  ? "bg-white/20 text-white"
+                  : "bg-stone-100 text-stone-600"
+              }`}
+            >
+              {totalCategoryEvent}
+            </span>
+          )}
         </button>
 
-        <button
-          type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-white hover:bg-stone-100 text-stone-600 border border-[#E2DFD4]"
-        >
-          <span>Technology & AI</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500">
-            14
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-white hover:bg-stone-100 text-stone-600 border border-[#E2DFD4]"
-        >
-          <span>Live Music & Concerts</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500">
-            9
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-white hover:bg-stone-100 text-stone-600 border border-[#E2DFD4]"
-        >
-          <span>Startups & Venture Capital</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500">
-            8
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-white hover:bg-stone-100 text-stone-600 border border-[#E2DFD4]"
-        >
-          <span>Fitness & Marathons</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500">
-            5
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-white hover:bg-stone-100 text-stone-600 border border-[#E2DFD4]"
-        >
-          <span>Arts & Culture</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500">
-            4
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 bg-white hover:bg-stone-100 text-stone-600 border border-[#E2DFD4]"
-        >
-          <span>Workshops & Masterclasses</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500">
-            2
-          </span>
-        </button>
+        {isCategoriesLoading
+          ? [...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="h-8 w-24 rounded-full bg-stone-200 animate-pulse shrink-0"
+              />
+            ))
+          : categories.map((cat) => (
+              <button
+                key={cat._id || cat.id}
+                type="button"
+                onClick={() => updateParams({ category: cat.name })}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
+                  activeCategory === cat.name
+                    ? "bg-stone-800 text-white border-stone-800"
+                    : "bg-white border-[#DDD9CE] text-stone-600 hover:bg-stone-50"
+                }`}
+              >
+                <span>{cat.name}</span>
+                <span
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-stone-100 text-stone-500 ${
+                    activeCategory === cat.name
+                      ? "bg-white/20 text-white"
+                      : "bg-stone-100 text-stone-600"
+                  }`}
+                >
+                  {cat.eventCount || 0}
+                </span>
+              </button>
+            ))}
       </div>
 
       {/* Format & Pricing Pills */}
@@ -225,12 +215,13 @@ export default function EventFilterBar() {
               key={i}
               type="button"
               onClick={() => handleFormatChange(f)}
-              className={`px-2.5 py-1 rounded-lg border text-xs font-medium capitalize transition-all cursor-pointer ${activeFormat === f
-                ? "bg-stone-800 text-white border-stone-800"
-                : "bg-white border-[#DDD9CE] text-stone-600 hover:bg-stone-50"
-                }`}
+              className={`px-2.5 py-1 rounded-lg border text-xs font-medium capitalize transition-all cursor-pointer ${
+                activeFormat === f
+                  ? "bg-stone-800 text-white border-stone-800"
+                  : "bg-white border-[#DDD9CE] text-stone-600 hover:bg-stone-50"
+              }`}
             >
-              {f ? f : "All Formats"}
+              {f !== "" ? f : "All Formats"}
             </button>
           ))}
         </div>
@@ -240,30 +231,33 @@ export default function EventFilterBar() {
           <button
             type="button"
             onClick={() => handleIsPaid("")}
-            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${filters.isPaid === "" || null
+            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+              filters.isPaid === "" || null
                 ? "bg-stone-800 text-white border-stone-800"
                 : "bg-white border-[#DDD9CE] text-stone-600"
-              }`}
+            }`}
           >
             All
           </button>
           <button
             onClick={() => handleIsPaid(false)} // isPaid = false
             type="button"
-            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${filters.isPaid === false
+            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+              filters.isPaid === false
                 ? "bg-emerald-700 text-white border-emerald-700"
                 : "bg-white border-[#DDD9CE] text-stone-600 hover:bg-stone-50"
-              }`}
+            }`}
           >
             Free
           </button>
           <button
             onClick={() => handleIsPaid(true)} // isPaid = true
             type="button"
-            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${filters.isPaid === true
+            className={`px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+              filters.isPaid === true
                 ? "bg-stone-800 text-white border-stone-800"
                 : "bg-white border-[#DDD9CE] text-stone-600 hover:bg-stone-50"
-              }`}
+            }`}
           >
             Paid
           </button>
@@ -271,4 +265,4 @@ export default function EventFilterBar() {
       </div>
     </div>
   );
-}
+});
