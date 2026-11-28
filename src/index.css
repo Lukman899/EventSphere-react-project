@@ -55,34 +55,219 @@
   background-size: 24px 24px;
 }
 
-/* Day Picker Calendar Custom Styles */
-.rdp, .rdp-root {
-  --rdp-cell-size: 38px;
-  --rdp-accent-color: #e65100;
-  --rdp-background-color: #feeedc;
-  margin: 0 !important;
+/* Airbnb-style Day Picker Custom Styles */
+.airbnb-day-picker {
+  --rdp-accent-color: #222222;
+  --rdp-accent-background-color: #f7f7f7;
+  --rdp-day-height: 38px;
+  --rdp-day-width: 38px;
+  --rdp-day_button-height: 36px;
+  --rdp-day_button-width: 36px;
+  --rdp-day_button-border-radius: 9999px;
+  --rdp-range_start-date-background-color: #222222;
+  --rdp-range_start-color: #ffffff;
+  --rdp-range_end-date-background-color: #222222;
+  --rdp-range_end-color: #ffffff;
+  --rdp-range_middle-background-color: #f7f7f7;
+  --rdp-range_middle-color: #222222;
+  --rdp-today-color: #222222;
+  --rdp-months-gap: 1.5rem;
+  margin: 0 auto !important;
 }
 
-.rdp-day_selected, .rdp-selected {
-  background-color: #e65100 !important;
+@media (min-width: 680px) {
+  .airbnb-day-picker {
+    --rdp-day-height: 40px;
+    --rdp-day-width: 40px;
+    --rdp-day_button-height: 38px;
+    --rdp-day_button-width: 38px;
+    --rdp-months-gap: 2rem;
+  }
+}
+
+/* Force 2 months side-by-side with no wrap on desktop, fluid single month on mobile */
+.airbnb-day-picker .rdp-months {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: var(--rdp-months-gap) !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  max-width: none !important;
+}
+
+.airbnb-day-picker .rdp-month {
+  width: 100% !important;
+  max-width: 285px !important;
+  position: relative !important;
+}
+
+@media (min-width: 680px) {
+  .airbnb-day-picker .rdp-month {
+    width: 285px !important;
+    min-width: 285px !important;
+    max-width: 285px !important;
+  }
+}
+
+.airbnb-day-picker .rdp-month_grid {
+  width: 100% !important;
+  border-collapse: collapse;
+}
+
+/* Navigation Buttons: Previous on far left, Next on far right (Airbnb style) */
+.airbnb-day-picker.rdp-root[data-nav-layout="around"] .rdp-button_previous {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 9999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #222222 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  z-index: 10 !important;
+  background: transparent !important;
+  border: none !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.airbnb-day-picker.rdp-root[data-nav-layout="around"] .rdp-button_next {
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 9999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #222222 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  z-index: 10 !important;
+  background: transparent !important;
+  border: none !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.airbnb-day-picker .rdp-button_previous:hover:not(:disabled),
+.airbnb-day-picker .rdp-button_next:hover:not(:disabled) {
+  background-color: #f2efe9 !important;
+}
+
+.airbnb-day-picker .rdp-chevron {
+  fill: #222222 !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* Month Captions: Centered over each month */
+.airbnb-day-picker .rdp-month_caption {
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  color: #222222 !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 0.5rem !important;
+  text-align: center !important;
+}
+
+.airbnb-day-picker .rdp-caption_label {
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  color: #222222 !important;
+}
+
+/* Weekday header */
+.airbnb-day-picker .rdp-weekday {
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  color: #717171 !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  padding: 0.25rem 0 !important;
+}
+
+/* Day cells & buttons */
+.airbnb-day-picker .rdp-day {
+  width: var(--rdp-day-width) !important;
+  height: var(--rdp-day-height) !important;
+  text-align: center !important;
+  padding: 0 !important;
+}
+
+.airbnb-day-picker .rdp-day_button {
+  width: var(--rdp-day_button-width) !important;
+  height: var(--rdp-day_button-height) !important;
+  font-size: 0.825rem !important;
+  font-weight: 600 !important;
+  color: #222222 !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s ease !important;
+  border: 1px solid transparent !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.airbnb-day-picker .rdp-day_button:hover:not(:disabled) {
+  border: 1px solid #222222 !important;
+  background-color: #ffffff !important;
+}
+
+.airbnb-day-picker .rdp-outside {
+  opacity: 0.25 !important;
+}
+
+.airbnb-day-picker .rdp-disabled {
+  opacity: 0.25 !important;
+  cursor: not-allowed !important;
+}
+
+/* Selection Range Styling (Airbnb Style) */
+.airbnb-day-picker .rdp-range_start {
+  background: linear-gradient(90deg, transparent 50%, #f7f7f7 50%) !important;
+}
+
+.airbnb-day-picker .rdp-range_end {
+  background: linear-gradient(90deg, #f7f7f7 50%, transparent 50%) !important;
+}
+
+.airbnb-day-picker .rdp-range_start.rdp-range_end,
+.airbnb-day-picker .rdp-range_start:not(.rdp-range_middle):not(.rdp-range_end) {
+  background: transparent !important;
+}
+
+.airbnb-day-picker .rdp-range_start .rdp-day_button,
+.airbnb-day-picker .rdp-range_end .rdp-day_button {
+  background-color: #222222 !important;
   color: #ffffff !important;
-  font-weight: 600;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
 }
 
-.rdp-day_today, .rdp-today {
-  border-bottom: 2px solid #e65100;
+.airbnb-day-picker .rdp-range_end:not(.rdp-range_start) .rdp-day_button {
+  box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #222222 !important;
 }
 
-
-.embla__viewport {
-  overflow: hidden;
+.airbnb-day-picker .rdp-range_middle {
+  background-color: #f7f7f7 !important;
 }
 
-.embla__container {
-  display: flex;
-}
-
-.embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
+.airbnb-day-picker .rdp-range_middle .rdp-day_button {
+  background-color: transparent !important;
+  color: #222222 !important;
+  font-weight: 600 !important;
+  border-radius: 0 !important;
+  border: none !important;
 }

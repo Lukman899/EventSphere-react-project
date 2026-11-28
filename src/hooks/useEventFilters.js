@@ -11,8 +11,10 @@ export function useEventFilters() {
       isPaid:
         isPaidParam === "true" ? true : isPaidParam === "false" ? false : "",
       category: searchParams.get("category") || "",
-      search : searchParams.get("search") || "",
-      city : searchParams.get("city") || ""
+      search: searchParams.get("search") || "",
+      city: searchParams.get("city") || "All",
+      sort: searchParams.get("sort") || "startDate",
+      order: searchParams.get("order") || "asc",
     };
   }, [searchParams]);
 
@@ -43,16 +45,40 @@ export function useEventFilters() {
     if (filters.search) {
       params.set("search", String(filters.search));
     }
-    if (filters.city) {
+    if (filters.city !== "All") {
       params.set("city", String(filters.city));
     }
+    if (filters.sort) {
+      params.set("sort", String(filters.sort));
+    }
+    if (filters.order) {
+      params.set("order", String(filters.order));
+    }
+
     return params.toString();
   }
 
+  const hasActiveFilters = useMemo(() => {
+    return Boolean(
+      filters.search ||
+      filters.category ||
+      filters.city !== "All" ||
+      filters.isPaid !== "" ||
+      filters.order !== "asc" ||
+      filters.sort !== "startDate" ||
+      filters.format,
+    );
+  }, [filters]);
+
+  function resetFilters (){
+    setSearchParams(new URLSearchParams())
+  }
   return {
     apiQueryString,
     updateParams,
     searchParams,
     filters,
+    hasActiveFilters,
+    resetFilters
   };
 }
